@@ -1,2 +1,57 @@
 ---
 # tasks file for tomcat8
+- apt:
+    name: default-jdk
+    update_cache: yes
+    state: present
+
+- group:
+    name: tomcat
+    state: present
+
+- user:
+    name: "{{ tomcat_user }}"
+    group: tomcat
+    home: "{{ tomcat_dir }}"
+    shell: /bin/false
+    state: present
+
+- file:
+    path: "{{ tomcat_dir }}"
+    state: directory
+
+- unarchive:
+    src: http://apache.mirrors.ionfish.org/tomcat/tomcat-8/v{{ tomcat_version }}/src/apache-tomcat-{{ tomcat_version }}-src.tar.gz
+    remote_src: yes
+    extra_opts: ['--strip-components=1']
+    dest: "{{ tomcat_dir }}"
+
+- file: 
+    path: "{{ tomcat_dir }}"
+    recurse: yes
+    group: tomcat
+
+- file: 
+    path: "{{ tomcat_dir }}/conf"
+    recurse: yes
+    mode: "g+r,g+x"
+
+- name: Change owner of multiple directories in tomcat directory 
+  file:
+      path: "{{ item }}"
+      owner: "{{ tomcat_user }}"
+  with_first_found: 
+    - "{{ tomcat_dir }}/webapps/"
+    - "{{ tomcat_dir }}/work/"
+    - "{{ tomcat_dir }}/temp/"
+    - "{{ tomcat_dir }}/logs/"
+    
+- copy:
+    src: tomcat.service
+    dest: /etc/systemd/system/tomcat.service
+
+- name: Start tomcat
+  systemd:
+      name: tomcat
+      daemon_reload: yes
+      state: started

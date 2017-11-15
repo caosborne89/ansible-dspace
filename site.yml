@@ -1,4 +1,11 @@
 ---
 - hosts: webservers
-  roles: 
+  become: true
+  become_method: sudo
+  # pre_tasks: 
+  #   - name: Install python-apt
+  #     raw: bash -c "apt install python-apt"
+  #     register: output
+  #     changed_when: output.stdout != ""
+  roles:
     - tomcat8

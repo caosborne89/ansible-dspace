@@ -20,11 +20,17 @@
     path: "{{ tomcat_dir }}"
     state: directory
 
-- unarchive:
-    src: http://apache.mirrors.ionfish.org/tomcat/tomcat-8/v{{ tomcat_version }}/src/apache-tomcat-{{ tomcat_version }}-src.tar.gz
+- name: list contents of directory
+  command: ls {{ tomcat_dir }}
+  register: contents   
+
+- name: Download and install tomcat
+  unarchive:
+    src: http://apache.mirrors.ionfish.org/tomcat/tomcat-8/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz
     remote_src: yes
     extra_opts: ['--strip-components=1']
     dest: "{{ tomcat_dir }}"
+  when: contents.stdout == ""
 
 - file: 
     path: "{{ tomcat_dir }}"
@@ -40,7 +46,7 @@
   file:
       path: "{{ item }}"
       owner: "{{ tomcat_user }}"
-  with_first_found: 
+  with_items: 
     - "{{ tomcat_dir }}/webapps/"
     - "{{ tomcat_dir }}/work/"
     - "{{ tomcat_dir }}/temp/"

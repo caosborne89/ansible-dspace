@@ -1,5 +1,5 @@
 ---
 # defaults file for tomcat8
 tomcat_user: tomcat
-tomcat_version: 8.5.23
+tomcat_version: 8.0.47
 tomcat_dir: /opt/tomcat

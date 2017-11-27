@@ -1,0 +1,3 @@
+---
+# defaults file for dspace6
+tomcat_user: tomcat

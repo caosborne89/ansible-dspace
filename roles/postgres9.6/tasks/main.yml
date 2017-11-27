@@ -1,0 +1,22 @@
+---
+# tasks file for postgres9.6
+- apt_repository:
+    repo: deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main
+    state: present
+
+- name: Configure the PostgreSQL APT key
+  apt_key: 
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc 
+    state: present
+
+- apt:
+    name: postgresql-9.6
+    update_cache: yes
+    state: present
+    notify: Restart PostgreSQL
+    
+- apt:
+    name: postgresql-contrib-9.6
+    update_cache: yes
+    state: present
+    notify: Restart PostgreSQL

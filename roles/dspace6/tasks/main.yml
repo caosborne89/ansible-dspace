@@ -1,0 +1,18 @@
+---
+# tasks file for dspace6
+- user:
+    name: "{{ tomcat_user }}"
+    group: tomcat
+    home: "{{ tomcat_dir }}"
+    shell: /bin/false
+    state: present
+
+- file:
+    path: /data1
+    state: directory
+    mode: 0755
+
+- unarchive:
+    remote_src: yes
+    src: https://github.com/DSpace/DSpace/releases/download/dspace-6.2/dspace-6.2-release.zip
+    dest: /data1/dspace-src

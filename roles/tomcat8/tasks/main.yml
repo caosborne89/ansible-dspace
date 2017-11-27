@@ -56,6 +56,11 @@
     src: tomcat.service
     dest: /etc/systemd/system/tomcat.service
 
+- copy:
+    src: server.xml
+    dest: /opt/tomcat/conf
+    force: yes
+
 - name: Start tomcat
   systemd:
       name: tomcat

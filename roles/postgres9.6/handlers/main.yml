@@ -1,0 +1,4 @@
+---
+# handlers file for postgres9.6
+- name: Restart PostgreSQL
+  service: name=postgresql state=restarted

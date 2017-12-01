@@ -1,0 +1,6 @@
+
+<?xml version='1.0'?>
+<Context
+    docBase="{{ dspace_install_dir }}/webapps/jspui"
+    reloadable="true"
+    cachingAllowed="false"/>

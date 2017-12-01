@@ -9,14 +9,14 @@
     url: https://www.postgresql.org/media/keys/ACCC4CF8.asc 
     state: present
 
-- apt:
+- name: Install postgresql 
+  apt:
     name: postgresql-9.6
     update_cache: yes
     state: present
-    notify: Restart PostgreSQL
-    
-- apt:
+  notify: Restart PostgreSQL
+  apt:
     name: postgresql-contrib-9.6
     update_cache: yes
     state: present
-    notify: Restart PostgreSQL
+  otify: Restart PostgreSQL

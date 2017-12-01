@@ -1,5 +1,14 @@
 ---
 # tasks file for dspace6
+- apt:
+    name: ant
+    update_cache: yes
+    state: present
+
+- name: list contents of directory
+  command: ls {{ dspace_src_dir }}
+  register: contents 
+
 - user:
     name: "{{ tomcat_user }}"
     group: tomcat
@@ -8,11 +17,62 @@
     state: present
 
 - file:
-    path: /data1
+    path: "{{ dspace_src_dir }}"
     state: directory
     mode: 0755
 
-- unarchive:
+- name: Download DSpace  
+  unarchive:
     remote_src: yes
-    src: https://github.com/DSpace/DSpace/releases/download/dspace-6.2/dspace-6.2-release.zip
-    dest: /data1/dspace-src
+    src: https://github.com/DSpace/DSpace/releases/download/{{ dspace_version }}/{{ dspace_version }}-release.tar.gz
+    dest: "{{ dspace_src_dir }}"
+    extra_opts: ['--strip-components=1']
+  when: contents.stdout == ""
+
+- postgresql_user:
+    name: dspace
+    role_attr_flags: NOSUPERUSER
+    password: "{{ dspace_postgres_user_passwrd }}" 
+
+- postgresql_db:
+    name: "{{ dspace_db }}"
+    owner: dspace
+    encoding: UNICODE
+
+- postgresql_ext:
+    db: "{{ dspace_db }}" 
+    login_user: postgres
+    name: pgcrypto
+    state: present
+
+# - file:
+#     path: "{{ dspace_install_dir }}"
+#     state: directory
+#     mode: 0755
+#     owner: dspace
+
+# - copy:
+#     src: local.cfg
+#     dest: {{ dspace_src_dir }}/dspace/config
+#     force: yes
+
+# - name: Deploy Web Applications
+#     copy:
+#       src: {{ item }}
+#       dest: {{ tomcat_dir }}/conf/Catalina/localhost
+#       force: yes
+#     with_items: 
+#       - jspui.xml
+#       - oai.xml
+#       - solr.xml
+
+# - name: Build the Dspace installation package 
+#   command: mvn package
+#   args:
+#     chdir: {{ dspace_src_dir }}
+
+# - name: Install DSpace
+#   command: ant fresh_install
+#   args:
+#     chdir: {{ dspace_src_dir }}/dspace/target/dspace-installer
+    

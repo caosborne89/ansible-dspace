@@ -10,3 +10,4 @@
   roles:
     - tomcat8
     - postgres9.6
+    - dspace6

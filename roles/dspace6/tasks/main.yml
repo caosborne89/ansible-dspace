@@ -5,21 +5,24 @@
     update_cache: yes
     state: present
 
-- name: list contents of directory
-  command: ls {{ dspace_src_dir }}
-  register: contents 
+- apt:
+    name: python-psycopg2
+    update_cache: yes
+    state: present
 
-- user:
-    name: "{{ tomcat_user }}"
-    group: tomcat
-    home: "{{ tomcat_dir }}"
-    shell: /bin/false
+- apt:
+    name: maven
+    update_cache: yes
     state: present
 
 - file:
     path: "{{ dspace_src_dir }}"
     state: directory
     mode: 0755
+
+- name: list contents of directory
+  command: ls {{ dspace_src_dir }}
+  register: contents 
 
 - name: Download DSpace  
   unarchive:
@@ -29,50 +32,78 @@
     extra_opts: ['--strip-components=1']
   when: contents.stdout == ""
 
-- postgresql_user:
+- file:
+    path: "{{ dspace_src_dir }}"
+    state: directory
+    owner: "{{ linux_user }}"
+    group: "{{ linux_user }}"
+
+- name: Create dspace user 
+  become_user: postgres
+  postgresql_user:
     name: dspace
     role_attr_flags: NOSUPERUSER
-    password: "{{ dspace_postgres_user_passwrd }}" 
+    password: "{{ dspace_postgres_user_passwrd }}"
+    state: present 
 
-- postgresql_db:
+- name: Create dspace database
+  become_user: postgres
+  postgresql_db:
     name: "{{ dspace_db }}"
     owner: dspace
     encoding: UNICODE
+    state: present
 
-- postgresql_ext:
+- name: Install the pgcrypto extension
+  become_user: postgres
+  postgresql_ext:
     db: "{{ dspace_db }}" 
-    login_user: postgres
     name: pgcrypto
     state: present
 
-# - file:
-#     path: "{{ dspace_install_dir }}"
-#     state: directory
-#     mode: 0755
-#     owner: dspace
+- name: Create dspace install directory
+  become_user: root
+  file:
+    path: "{{ dspace_install_dir }}"
+    state: directory
+    mode: 0755
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
 
-# - copy:
-#     src: local.cfg
-#     dest: {{ dspace_src_dir }}/dspace/config
-#     force: yes
+- copy:
+    src: local.cfg
+    dest: "{{ dspace_src_dir }}/dspace/config"
+    force: yes
 
-# - name: Deploy Web Applications
-#     copy:
-#       src: {{ item }}
-#       dest: {{ tomcat_dir }}/conf/Catalina/localhost
-#       force: yes
-#     with_items: 
-#       - jspui.xml
-#       - oai.xml
-#       - solr.xml
+- file:
+    path: "{{ tomcat_dir }}/conf/Catalina/localhost"
+    state: directory
 
-# - name: Build the Dspace installation package 
-#   command: mvn package
-#   args:
-#     chdir: {{ dspace_src_dir }}
+- name: Deploy Web Applications
+  template:
+    src: "{{ item }}"
+    dest: "{{ tomcat_dir }}/conf/Catalina/localhost"
+    force: yes
+  with_items: 
+    - jspui.xml
+    - oai.xml
+    - solr.xml
 
-# - name: Install DSpace
-#   command: ant fresh_install
-#   args:
-#     chdir: {{ dspace_src_dir }}/dspace/target/dspace-installer
+- name: Build the Dspace installation package 
+  command: mvn package
+  args:
+    chdir: "{{ dspace_src_dir }}"
+
+- name: Install DSpace
+  command: ant fresh_install
+  args:
+    chdir: "{{ dspace_src_dir }}/dspace/target/dspace-installer"
     
+- name: Change user and group of dspace install directory
+  become_user: root
+  file: 
+    path: "{{ dspace_install_dir }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    recurse: yes
+    state: directory

@@ -16,6 +16,11 @@
     shell: /bin/false
     state: present
 
+- user: 
+    name: "{{ linux_user }}"
+    group: tomcat
+    state: present
+
 - file:
     path: "{{ tomcat_dir }}"
     state: directory

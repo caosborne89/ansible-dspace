@@ -19,4 +19,4 @@
     name: postgresql-contrib-9.6
     update_cache: yes
     state: present
-  otify: Restart PostgreSQL
+  notify: Restart PostgreSQL

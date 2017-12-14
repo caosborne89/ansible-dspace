@@ -1,0 +1,15 @@
+---
+- hosts: webservers
+
+  vars:
+    # Change this to your linux user name 
+    linux_user_param: user
+
+  become: true
+
+  become_method: sudo
+
+  roles:
+    - {role: tomcat8, linux_user: "{{ linux_user_param }}"}
+    - {role: postgres9.6}
+    - {role: dspace6, linux_user: "{{ linux_user_param }}"}

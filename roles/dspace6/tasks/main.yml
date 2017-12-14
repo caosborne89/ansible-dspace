@@ -101,3 +101,5 @@
     group: "{{ tomcat_group }}"
     recurse: yes
     state: directory
+  notify: 
+    - Restart tomcat

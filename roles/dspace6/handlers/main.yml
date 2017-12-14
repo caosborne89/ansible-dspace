@@ -1,2 +1,4 @@
 ---
 # handlers file for dspace6
+- name: Restart tomcat
+  service: name=tomcat state=restarted

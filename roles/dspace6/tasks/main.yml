@@ -1,20 +1,14 @@
 ---
 # tasks file for dspace6
 - apt:
-    name: ant
+    name: "{{ item }}"
     update_cache: yes
-    state: present
-
-- apt:
-    name: python-psycopg2
-    update_cache: yes
-    state: present
-
-- apt:
-    name: maven
-    update_cache: yes
-    state: present
-
+    state: latest
+  with_items: 
+    - ant
+    - python-psycopg2
+    - maven
+  
 - file:
     path: "{{ dspace_src_dir }}"
     state: directory

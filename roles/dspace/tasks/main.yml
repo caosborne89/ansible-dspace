@@ -65,8 +65,8 @@
     group: "{{ tomcat_group }}"
 
 - copy:
-    src: local.cfg
-    dest: "{{ dspace_src_dir }}/dspace/config"
+    src: build.properties
+    dest: "{{ dspace_src_dir }}"
     force: yes
 
 - file:
@@ -82,6 +82,7 @@
     - jspui.xml
     - oai.xml
     - solr.xml
+    - xmlui.xml
 
 - name: Build the Dspace installation package 
   command: mvn package

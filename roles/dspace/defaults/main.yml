@@ -2,7 +2,7 @@
 # defaults file for dspace6
 tomcat_user: tomcat
 tomcat_group: tomcat
-dspace_version: dspace-6.2
+dspace_version: dspace-5.8
 dspace_src_dir: /data1/dspace-src
 dspace_postgres_user_passwrd: dspace
 dspace_db: dspace

@@ -12,4 +12,4 @@
   roles:
     - {role: tomcat8, linux_user: "{{ linux_user_param }}"}
     - {role: postgres9.6}
-    - {role: dspace6, linux_user: "{{ linux_user_param }}"}
+    - {role: dspace, linux_user: "{{ linux_user_param }}"}

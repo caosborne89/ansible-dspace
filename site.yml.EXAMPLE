@@ -9,6 +9,15 @@
 
   become_method: sudo
 
+  pre_tasks:
+    - name: Create linux user if not already existing
+      user:
+        name: "{{ linux_user_param }}"
+        shell: /bin/bash
+        groups: adm, cdrom, sudo, dip, plugdev, lxd,lpadmin, sambashare
+        state: present
+        append: yes
+
   roles:
     - {role: tomcat8, linux_user: "{{ linux_user_param }}"}
     - {role: postgres9.6}

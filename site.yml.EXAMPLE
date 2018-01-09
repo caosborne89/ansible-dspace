@@ -9,7 +9,11 @@
 
   become_method: sudo
 
+  gather_facts: no
+
   pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
     - name: Create linux user if not already existing
       user:
         name: "{{ linux_user_param }}"

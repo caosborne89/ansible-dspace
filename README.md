@@ -4,6 +4,7 @@
 * Ubuntu 16.04 Virtual Machine
 * Python 2.7 installed on guest machine
 * Ansible installed on host machine
+* Currently only tested on Ansible 2.4.2.0
 
 
 ## Getting started

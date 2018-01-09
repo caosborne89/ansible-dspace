@@ -104,3 +104,8 @@
     state: directory
   notify: 
     - Restart tomcat
+
+- name: Initialize the DSpace Database 
+  command: bin/dspace database migrate
+  args:
+    chdir: "{{ dspace_install_dir }}"

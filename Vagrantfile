@@ -26,6 +26,8 @@ Vagrant.configure(2) do |config|
 
 	  v.customize ["modifyvm", :id, "--memory", mem]
   end
+
+  config.vm.synced_folder "src/", "/data1/dspace-src", owner: "root", group: "root"
   
   config.vm.provision :ansible do |ansible|
       ansible.playbook = "site.yml"

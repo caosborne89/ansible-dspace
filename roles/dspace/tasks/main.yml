@@ -21,7 +21,7 @@
 - name: Download DSpace  
   unarchive:
     remote_src: yes
-    src: https://github.com/DSpace/DSpace/releases/download/{{ dspace_version }}/{{ dspace_version }}-release.tar.gz
+    src: https://github.com/DSpace/DSpace/releases/download/{{ dspace_version }}/{{ dspace_version }}-src-release.tar.gz
     dest: "{{ dspace_src_dir }}"
     extra_opts: ['--strip-components=1']
   when: contents.stdout == ""

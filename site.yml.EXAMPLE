@@ -1,5 +1,5 @@
 ---
-- hosts: webservers
+- hosts: default
 
   vars:
     # Change this to your linux user name 
@@ -18,7 +18,7 @@
       user:
         name: "{{ linux_user_param }}"
         shell: /bin/bash
-        groups: adm, cdrom, sudo, dip, plugdev, lxd,lpadmin, sambashare
+        groups: adm, cdrom, sudo, dip, plugdev, lxd
         state: present
         append: yes
 
